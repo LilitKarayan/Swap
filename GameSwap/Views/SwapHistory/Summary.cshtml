@@ -1,0 +1,27 @@
+﻿@using GameSwap.Models
+<style>
+    td {
+        border: 1px solid #f5b707;
+    }
+</style>
+<table style="border:1px solid #f5b707" class="table">
+    Swap History Summary
+    <tr style="border:1px solid #f5b707">
+        <td>My Role</td>
+        <td>Total</td>
+        <td>Accepted</td>
+        <td>Rejected</td>
+        <td>Rejected %</td>
+    </tr>
+    @foreach (SwapHistorySummary sh in Model)
+    {
+        double percent = sh.RejectedPercentage;
+    <tr style="border:1px solid #f5b707">
+        <td>@sh.MyRole</td>
+        <td>@sh.Total.ToString()</td>
+        <td>@sh.Accepted.ToString()</td>
+        <td>@sh.Rejected.ToString()</td>
+        <td style="@(percent >= 50 ? "background-color:red" : "")">@sh.RejectedPercentage %</td>
+    </tr>
+    }
+</table>

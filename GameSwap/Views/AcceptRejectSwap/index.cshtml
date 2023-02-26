@@ -1,0 +1,178 @@
+﻿<style>
+    .logout_btn {
+        font-size: 15px;
+        transition: ease-in all 0.5s;
+        background-color: #f5b707;
+        color: #fff;
+        position: fixed;
+        right: 20px;
+        top: 10px;
+        padding: 6px 13px;
+    }
+
+        .logout_btn:hover {
+            background-color: #232323;
+            color: #fff;
+            transition: ease-in all 0.5s;
+            border-radius: 26px;
+        }
+
+    .logo_text {
+        color: #f5b707;
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 5px
+    }
+</style>
+<div>
+    <h1 class="logo_text"><a href="javascript:GoMainMenu()">Game Swap<a /></h1>
+    <button class="logout_btn" type="button" onclick="Logout()">Logout</button>
+    <hr>
+</div>
+<br>
+
+<h1>Accept/reject swaps</h1>
+
+<br>
+<table class="table table-striped">
+    <tr>
+        <th><b>Date</b></th>
+        <th><b>Desired Item</b></th>
+        <th><b>Proposer</b></th>
+        <th><b>Rating</b></th>
+        <th><b>Distance</b></th>
+        <th><b>Proposed Item</b></th>
+        <th><b></b></th>
+    </tr>
+    @foreach (AcceptRejectSwap acceptRejectSwap in ViewBag.acceptRejectSwaps)
+    {
+        <tr>
+            <td>@acceptRejectSwap.ProposalDateTime.ToString("MM/dd/yyyy")</td>
+            <td><u><a href="javascript:GetItemDetails(@acceptRejectSwap.DesiredItemNumber)" style="color: blue">@acceptRejectSwap.DesiredItemNameTitle</a></u></td>
+            <td>@acceptRejectSwap.ProposerNickname</td>
+            @if (acceptRejectSwap.ProposerRating >= 0)
+            {
+                <td> @string.Format("{0:0.00}", acceptRejectSwap.ProposerRating)</td>
+            }
+            else
+            {
+                <td> None</td>
+            }
+            <td>@string.Format("{0:0.0}", acceptRejectSwap.Distance) miles</td>
+            <td><u><a href="javascript:GetItemDetails(@acceptRejectSwap.ProposedItemNumber)" style="color: blue">@acceptRejectSwap.ProposedItemNameTitle</a></u></td>
+            <td>
+                <button type="button" class="btn btn-success" onclick="acceptOrRejectSwap(@ViewBag.acceptRejectSwaps.Count,'@acceptRejectSwap.ProposalDateTime.ToString("yyyy/MM/dd HH:mm:ss")','@acceptRejectSwap.ProposerEmail','@acceptRejectSwap.CounterpartyEmail','swapped', '@acceptRejectSwap.ProposerFirstName', '@acceptRejectSwap.ProposerPhoneNumber', '@acceptRejectSwap.ProposerPhoneNumberType', '@acceptRejectSwap.ProposerPhoneNumberIfShare')">Accept</button>
+                <button type="button" class="btn btn-danger" onclick="acceptOrRejectSwap(@ViewBag.acceptRejectSwaps.Count,'@acceptRejectSwap.ProposalDateTime.ToString("yyyy/MM/dd HH:mm:ss")','@acceptRejectSwap.ProposerEmail','@acceptRejectSwap.CounterpartyEmail','rejected', '@acceptRejectSwap.ProposerFirstName', '@acceptRejectSwap.ProposerPhoneNumber', '@acceptRejectSwap.ProposerPhoneNumberType', '@acceptRejectSwap.ProposerPhoneNumberIfShare')">Reject</button>
+            </td>
+
+        </tr>
+    }
+</table>
+
+<script>
+@* Go to Register Page *@
+    function acceptOrRejectSwap(numberOfUnaccepted, proposalDateTime, proposerEmail, counterpartyEmail, action, proposerFirstName, proposerPhoneNumber, proposerPhoneNumberType, proposerPhoneNumberIfShare) {
+        $.ajax({
+                type: "POST",
+                url: "/AcceptRejectSwap/acceptOrRejectSwap",
+                async: true,
+                dataType: "json",
+                data: { proposalDateTimeInput: proposalDateTime, proposerEmailInput: proposerEmail, counterpartyEmailInput: counterpartyEmail, actionInput: action},
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        if (action != "swapped") {
+                            alert(" The swap is rejected!");
+                        } else {
+                            message = " The swap is accepted! \n Contact the proposer to swap items! \n Email: " + proposerEmail + " \n Name: " + proposerFirstName + " \n ";
+                            if (proposerPhoneNumberIfShare > 0.5){
+                                message += "Phone: " + proposerPhoneNumber + " (" + proposerPhoneNumberType + ")";
+                            } else {
+                                message += "No phone number available";
+                            }
+                            alert(message);
+                        }
+                        if (numberOfUnaccepted <= 1) {
+                            window.location.href = '/MainMenu/Index';
+
+                        }
+                        else {
+                            window.location.href = '/AcceptRejectSwap/Index';
+
+                        }
+
+                    }
+                }
+            });
+    }
+
+    function GetItemDetails(itemNumberInput) {
+        $.ajax({
+            type: "POST",
+            url: "/Item/GetItemDetails",
+            async: true,
+            dataType: "json",
+            data: { itemNumber: itemNumberInput },
+            success: function (data) {
+                if (data.errMsg != "") {
+                    alert(String(data.errMsg));
+                } else {
+                    window.location.href = '/Item/Index';
+                }
+            },
+            error: function () {
+                return "error";
+            }
+        });
+    }
+
+    function GoMainMenu() {
+        $.ajax({
+            type: "POST",
+            url: "/MainMenu/GoMainMenu",
+            async: true,
+            dataType: "json",
+            data: {},
+            success: function (data) {
+                if (data.errMsg != "") {
+                    alert(String(data.errMsg));
+                } else {
+                    window.location.href = '/MainMenu/Index';
+                }
+            },
+            error: function () {
+                return "error";
+            }
+        });
+
+
+    }
+
+    function Logout() {
+        $.ajax({
+            type: "POST",
+            url: "/Login/Logout",
+            async: true,
+            dataType: "json",
+            data: {},
+            success: function (data) {
+                window.location.href = '/Login/Index';
+            }
+        });
+    }
+
+</script>
+
+</script>
+<!-- end contact -->
+<!-- Javascript files-->
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/popper.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/jquery-3.0.0.min.js"></script>
+<script src="~/js/plugin.js"></script>
+<!-- sidebar -->
+<script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="~/js/custom.js"></script>
+<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>

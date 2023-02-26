@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Main Menu Page";
+}
+
+<h1>Item Details</h1>
+<table class="table table-striped">
+    <tr>
+        <td><b>Item #</b></td>
+        <td>@ViewBag.item.ItemNumber</td>
+    </tr>
+    <tr>
+        <td><b>Title</b></td>
+        <td>@ViewBag.item.NameTitle</td>
+    </tr>
+
+    @try
+    {
+        if (@ViewBag.item.Description.Length > 0)
+        {
+            <tr>
+                <td><b>Description</b></td>
+                <td>@ViewBag.item.Description</td>
+            </tr>
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+
+
+    <tr>
+        <td><b>Game type</b></td>
+        <td>@ViewBag.item.Type</td>
+    </tr>
+
+    @try
+    {
+        if (@ViewBag.item.PieceCount != 0)
+        {
+            <tr>
+                <td><b>Piece count</b></td>
+                <td>@ViewBag.item.PieceCount</td>
+            </tr>
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+
+
+    @try
+    {
+        if (@ViewBag.item.Platform.Length > 0)
+        {
+            <tr>
+                <td><b>Platform</b></td>
+                <td>@ViewBag.item.Platform</td>
+            </tr>
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+
+
+    @try
+    {
+        if (@ViewBag.item.Media.Length > 0)
+        {
+            <tr>
+                <td><b>Media</b></td>
+                <td>@ViewBag.item.Media</td>
+            </tr>
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+
+
+    @try
+    {
+        if (@ViewBag.item.VideoGamePlatform.Length > 0)
+        {
+            <tr>
+                <td><b>Video Game Platform</b></td>
+                <td>@ViewBag.item.VideoGamePlatform</td>
+            </tr>
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+
+    <tr>
+        <td><b>Condition</b></td>
+        <td>@ViewBag.item.ItemCondition</td>
+    </tr>
+    <tr>
+        <td> <br></td>
+        <td> </td>
+    </tr>
+
+
+
+
+    @try
+    {
+        if (@ViewBag.seller.Email != @ViewBag.currentUserEmail)
+        {
+            <tr>
+                <td><b>Offered by</b></td>
+                <td>@ViewBag.seller.Nickname</td>
+            </tr>
+            <tr>
+                <td>Location</td>
+                <td>@ViewBag.seller.PostalCode.City, @ViewBag.seller.PostalCode.State @ViewBag.seller.PostalCode.Code </td>
+            </tr>
+            <tr>
+                <td>Rating</td>
+                <td>@string.Format("{0:0.00}", ViewBag.sellerAverageRating)</td>
+            </tr>
+            @try
+            {
+                if (@ViewBag.sellerDistance > 0.2)
+                {
+                    <tr style="background-color:@ViewBag.distanceColor;">
+                        <td>Distance</td>
+                        <td>@string.Format("{0:0.0}", ViewBag.sellerDistance) miles</td>
+                    </tr>
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+    }
+    catch (Exception e)
+    {
+
+    }
+</table>
+
+<br>
+
+@try
+{
+    if (@ViewBag.seller.Email != @ViewBag.currentUserEmail)
+    {
+        @try
+        {
+            if (ViewBag.numberOfUnacceptedSwaps <= 5 && ViewBag.numberOfUnratedSwaps <= 2 && ViewBag.AvailibilityForSwap == true)
+            {
+                <button class="btn btn-primary" type="button" onclick="ProposeSwap()">Propose swap</button>
+                <br>
+            }
+        }
+        catch (Exception e)
+        {
+        }
+    }
+}
+catch (Exception e)
+{
+
+}
+
+
+<script>
+@* Go to Register Page *@
+    function ProposeSwap() {
+            $.ajax({
+                type: "POST",
+                url: "/Swap/StartSwap",
+                async: true,
+                dataType: "json",
+                data: { itemNumberInput: @ViewBag.item.ItemNumber.ToString(), sellerDistanceInput: @ViewBag.sellerDistance, itemTitleInput: "@ViewBag.item.NameTitle.ToString()", counterpartyEmailInput: "@ViewBag.item.Email.ToString()" },
+                success: function (data) {
+                    window.location.href = '/Swap/Index';
+                }
+            });
+        }
+</script>
+
+</script>
+<!-- end contact -->
+<!-- Javascript files-->
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/popper.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/jquery-3.0.0.min.js"></script>
+<script src="~/js/plugin.js"></script>
+<!-- sidebar -->
+<script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="~/js/custom.js"></script>
+<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>

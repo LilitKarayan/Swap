@@ -1,0 +1,72 @@
+﻿@using GameSwap.Models
+@model (string searchTerm, string searchArg, List<SearchItem>searchItems, bool isValid)
+<style>
+    td {
+        border: 1px solid #f5b707;
+    }
+</style>
+<h1>Search Results</h1>
+<table class="table" style="border:1px solid #f5b707">
+	
+	@if (!Model.isValid)
+	{
+		<p>Postal code is invalid! It must contain only 5 digits</p>
+	}
+	else if (Model.searchItems.Any())
+	{
+		 <p>@Model.searchTerm: @Model.searchArg</p>
+		 <tr style="border:1px solid #f5b707">
+			<td>Item Number</td>
+			<td>Game Type</td>
+			<td>Title</td>
+			<td>Condition</td>
+			<td>Description</td>
+			<td>Distance</td>
+			<td></td>
+		</tr>
+		@foreach (SearchItem searchItem in Model.searchItems)
+		{
+			<tr style="border:1px solid #f5b707">
+				<td>@searchItem.ItemNumber</td>
+				<td>@searchItem.Type</td>
+				<td style="@(searchItem.FoundIn.Equals("Name") ? "background-color:#ADEAEA" : "")">@searchItem.NameTitle</td>
+				<td>@searchItem.ItemCondition</td>
+				<td style="@(searchItem.FoundIn.Equals("Description") ? "background-color:#ADEAEA" : "")">
+					@(searchItem.Description.Length > 100 ? searchItem.Description.Substring(0, 100) + "..." : searchItem.Description)
+				</td>
+				<td>@String.Format("{0:0.0}", searchItem.Distance)</td>
+				<td><button class="btn btn-warning" type="button" onclick="GetItemDetails(@searchItem.ItemNumber)">Item Details</button></td>
+			</tr>
+		}	
+	}
+	else 
+	{
+		<p>Sorry, no results found!</p>
+	}
+	
+</table>
+
+<script>
+
+    @* Runs the login function*@
+        function GetItemDetails(itemNumberInput) {
+            $.ajax({
+                type: "POST",
+                url: "/Item/GetItemDetails",
+                async: true,
+                dataType: "json",
+                data: { itemNumber: itemNumberInput },
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        window.location.href = '/Item/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+        }
+
+</script>

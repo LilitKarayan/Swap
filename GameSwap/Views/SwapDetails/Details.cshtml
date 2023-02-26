@@ -1,0 +1,60 @@
+﻿@model GameSwap.Models.SwapDetail
+<h2> Swap Details</h2>
+<table class="table" style="border:1px solid #f5b707">
+    <tr>
+        <td><b>Proposal Date</b></td>
+        <td>@Model.Proposed.ToString("yyyy-MM-dd HH:mm:ss")</td>
+    </tr>
+    <tr>
+        <td><b>Accepted/Rejected</b></td>
+        <td>@(Model.AcceptedRejected == null ? "N/A" : @Model.AcceptedRejected.Value.ToString("yyyy-MM-dd HH:mm:ss")) </td>
+    </tr>
+    <tr>
+        <td><b>Status</b></td>
+        <td>@Model.Status</td>
+    </tr>
+    <tr>
+        <td><b>Role</b></td>
+        <td>@Model.Role</td>
+    </tr>
+    <tr>
+        <td><b>Rating Left</b></td>
+        <td id="rating">
+            @if (Model.RatingLeft == null && Model.Status != "rejected")
+            {
+                <select id="rating" onchange=Rate(this)>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            }
+            else
+            {
+                @Model.RatingLeft
+            }
+        </td>
+    </tr>
+</table>
+<script>
+    function Rate(rating) {
+        val = rating.value
+        $.ajax({
+            type: "POST",
+            url: "/SwapDetails/RateSwap",
+            async: true,
+            dataType: "json",
+            data: { value: val },
+            success: function (data) {
+                if (data.error != null) {
+                    alert("Couldn't rate swap " + data.error);
+                }
+                else {
+                    window.location.href = '/SwapDetails/Index'
+                }
+            }
+        });
+    }
+</script>

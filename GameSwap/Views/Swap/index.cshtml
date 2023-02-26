@@ -1,0 +1,105 @@
+﻿
+
+
+<h1>Propose swap</h1>
+<br>
+@if (@ViewBag.sellerDistance >= 100)
+{
+    <p style="background-color: red;">
+        The other user is  @string.Format("{0:0.0}", ViewBag.sellerDistance) miles away!
+    </p>
+}
+
+<br>
+
+You are proposing a trade for @ViewBag.counterpartyItemTitle .
+<br>
+<br>
+<b>Please choose your proposed item:</b>
+<table class="table table-striped radBL" >
+    <tr>
+        <th><b>Item #</b></th>
+        <th><b>Game type</b></th>
+        <th><b>Title</b></th>
+        <th><b>Condition</b></th>
+        <th><b></b></th>
+    </tr>
+    @foreach (Item item in ViewBag.items)
+    {
+        <tr>
+            <td>@item.ItemNumber</td>
+            <td>@item.Type</td>
+            <td>@item.NameTitle</td>
+            <td>@item.ItemCondition</td>
+            <td>
+                <input type="radio" id=@item.ItemNumber value=@item.ItemNumber name="radioSelect" class="radBL">
+                <label for=@item.ItemNumber> Select </label>
+            </td>
+
+        </tr>
+    }
+</table>
+
+<button id="btnSave" type="button" class="btn btn-primary" onclick="ConfirmSwap()" disabled="disabled">Confirm</button>
+
+
+<script>
+
+        @*Runs the login function*@
+    function ConfirmSwap() {
+
+        let text = "Press OK to confirm the swap proposal.";
+        if (confirm(text) == true) {
+            $.ajax({
+                type: "POST",
+                url: "/Swap/ProposeSwap",
+                async: true,
+                dataType: "json",
+                data: { proposerEmailInput: "@ViewBag.currentUserEmail", counterpartyEmailInput: "@ViewBag.counterpartyEmail", proposerItemInput: $('input[name=radioSelect]:checked').val()  ,counterpartyItemInput: "@ViewBag.counterpartyItemNumber.ToString()"  },
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        alert("The swap is proposed");
+                        window.location.href = '/MainMenu/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+            text = "Swap is proposed!";
+        } else {
+            text = "";
+        }
+    }
+
+
+
+</script>
+
+<!-- Javascript files-->
+<script src="~/js/jquery.min.js"></script>
+<script src="~/js/popper.min.js"></script>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/jquery-3.0.0.min.js"></script>
+<script src="~/js/plugin.js"></script>
+<!-- sidebar -->
+<script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script src="~/js/custom.js"></script>
+<script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+
+<script>
+    $(function () {
+        var requiredRadios = $(".radBL :radio")
+        requiredRadios.change(function () {
+            var anyNotChecked = requiredRadios.filter(function () {
+                return $("[name='" + this.name + "']:checked").length === 0
+            }).get()
+            console.log(anyNotChecked)
+            $("#btnSave").prop("disabled", anyNotChecked.length !== 0)
+        })
+
+
+    })</script>

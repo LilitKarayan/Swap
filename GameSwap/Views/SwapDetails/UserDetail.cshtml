@@ -1,0 +1,29 @@
+﻿@model GameSwap.Models.UserDetail
+<h2> User Details</h2>
+<table class="table" style="border:1px solid #f5b707">
+    <tr>
+        <td><b>Nickname</b></td>
+        <td>@(String.IsNullOrEmpty(Model.Nickname) ? "N/A" : Model.Nickname)</td>
+    </tr>
+    <tr>
+        <td><b>Distance</b></td>
+        <td>@Model.Distance</td>
+    </tr>
+    @if (ViewBag.Status.ToString().Equals("swapped"))
+    {
+        <tr>
+            <td><b>Name</b></td>
+            <td>@Model.Name</td>
+        </tr>
+        <tr>
+            <td><b>Email</b></td>
+            <td>@(String.IsNullOrEmpty(Model.Email) ? "N/A" : Model.Email)</td>
+        </tr>
+        <tr>
+            <td><b>Phone</b></td>
+            <td>
+                @(String.IsNullOrEmpty(Model.PhoneNumber) ? "N/A" : String.Concat(Model.PhoneNumber, " ", Model.PhoneType))
+            </td>
+        </tr>
+    }
+</table>

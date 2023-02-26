@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Registration";
+}
+
+<style>
+    #main {
+        border: 1px solid #f5b707;
+        width: 500px;
+        padding: 50px 50px;
+        margin: 0px 0px 0px 250px;
+        border-radius:25px;
+        color: black;
+    }
+    .register_btn {
+        font-size: 17px;
+        background-color: #f5b707;
+        color: #000;
+        padding: 13px 0px;
+        width: 100%;
+        max-width: 190px;
+        text-align: center;
+        display: inline-block;
+        transition: ease-in all 0.5s;
+        border: none;
+    }
+
+        .register_btn:hover {
+            background-color: #232323;
+            color: #fff;
+            transition: ease-in all 0.5s;
+            border-radius: 26px;
+        }
+    
+</style>
+
+<body>
+    <div id="main">
+        <header align="center">
+            <br>
+            <br>
+            <h1>Registration</h1>
+            <hr>
+        </header>
+
+        <form align="center" method="post" action="#">
+            <table style="width:100px" class="table">
+                <tr>
+                    <td>Email</td>
+                    <td alignment="center"><input type="text" name="email" id="email" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>Password </td>
+                    <td alignment="center"><input type="password" name="password" id="password" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>First Name</td>
+                    <td alignment="center"><input type="text" name="first_name" id="firstName" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>Last Name</td>
+                    <td alignment="center"><input type="text" name="last_name" id="lastName" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>Nickname </td>
+                    <td alignment="center"><input type="text" name="nickname" id="nickname" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>City </td>
+                    <td alignment="center"><input type="text" name="city" id="city" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td alignment="center"><input type="text" name="state" id="state" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>Postal Code </td>
+                    <td alignment="center"><input type="text" name="postal_code" id="postalCode" style="width: 200px" /></td>
+                </tr>
+                <tr>
+                    <td>Phone Number (optional) </td>
+                    <td alignment="center"><input type="text" name="username" id="phoneNumber" style="width: 200px" /></td>
+                </tr>
+
+                <tr>
+                    <td>Type</td>
+                    <td>
+                        <select id="type" style="width: 150px; height:30px">
+                            <option value="home">Home</option>
+                            <option value="work">Work</option>
+                            <option value="mobile">Mobile</option>
+                        </select>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td>Show phone number in swap</td>
+                    <td>
+                        <input type="checkbox" id="ifShare" name="show" value="ShowInSwap" style="width: 200px">
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td alignment="center"><input type="button" value="Register" class="register_btn" onclick="RegisterUser()" style="width: 200px" /></td>
+                </tr>
+
+            </table>
+        </form>
+    </div>
+
+    <script>
+        @* Runs the login function*@
+        function RegisterUser() {
+            $.ajax({
+                type: "POST",
+                url: "/Register/RegisterUser",
+                async: true,
+                dataType: "json",
+                data: { email: $("#email").val(), password: $("#password").val(), firstName: $("#firstName").val(), lastName: $("#lastName").val(), nickname: $("#nickname").val(), postalCode: $("#postalCode").val(), phoneNumber: $("#phoneNumber").val(), type: $("#type").val(), ifShare: $('#ifShare').is(":checked"), city: $("#city").val(), state: $("#state").val() },
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        window.location.href = '/MainMenu/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+        }
+    </script>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>

@@ -1,0 +1,89 @@
+﻿@{ ViewData["Title"] = "Swap History"; }
+
+<style>
+    .logout_btn {
+        font-size: 15px;
+        transition: ease-in all 0.5s;
+        background-color: #f5b707;
+        color: #fff;
+        position: fixed;
+        right: 20px;
+        top: 10px;
+        padding: 6px 13px;
+    }
+
+        .logout_btn:hover {
+            background-color: #232323;
+            color: #fff;
+            transition: ease-in all 0.5s;
+            border-radius: 26px;
+        }
+
+    .logo_text {
+        color: #f5b707;
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 5px
+    }
+</style>
+<div>
+    <h1 class="logo_text"><a href="javascript:GoMainMenu()">Game Swap<a /></h1>
+    <button class="logout_btn" type="button" onclick="Logout()">Logout</button>
+    <hr>
+</div>
+<br>
+<header>
+    <h1>Rate Swaps</h1>
+</header>
+<body>
+    <div align="left" id="swaps"></div>
+    <script>
+        window.onload = function () {
+            $("#swaps").load('@Url.Action("Swaps", "ViewSwaps")');
+        }
+    </script>
+    <script>
+        function GoMainMenu() {
+            $.ajax({
+                type: "POST",
+                url: "/MainMenu/GoMainMenu",
+                async: true,
+                dataType: "json",
+                data: {},
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        window.location.href = '/MainMenu/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+        }
+
+        function Logout() {
+            $.ajax({
+                type: "POST",
+                url: "/Login/Logout",
+                async: true,
+                dataType: "json",
+                data: {},
+                success: function (data) {
+                    window.location.href = '/Login/Index';
+                }
+            });
+        }
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>

@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "ListItem";
+}
+
+<style>
+    #main {
+        border: 1px solid #f5b707;
+        width: 500px;
+        padding: 50px 50px;
+        margin: 0px 0px 0px 250px;
+        border-radius:25px;
+        color: black;
+    }
+    .register_btn {
+        font-size: 17px;
+        background-color: #f5b707;
+        color: #000;
+        padding: 13px 0px;
+        width: 100%;
+        max-width: 190px;
+        text-align: center;
+        display: inline-block;
+        transition: ease-in all 0.5s;
+        border: none;
+    }
+
+        .register_btn:hover {
+            background-color: #232323;
+            color: #fff;
+            transition: ease-in all 0.5s;
+            border-radius: 26px;
+        }
+    
+</style>
+
+<body>
+    <div id="main">
+        <header align="center">
+            <br>
+            <br>
+            <h1>List Item</h1>
+            <hr>
+        </header>
+
+        @if (ViewBag.CanListItem)
+        {
+            <form align="center" method="post" action="#">
+                <table style="width:100px" class="table">
+                    <tr>
+                        <td>Game Type</td>
+                        <td><select id="type" style="width: 150px; height:30px">
+                                <option value="BoardGame">Board game</option>
+                                <option value="CardGame">Card game</option>
+                                <option value="JigsawPuzzle">Jigsaw puzzle</option>
+                                <option value="ComputerGame">Computer game</option>
+                                <option value="VideoGame">Video game</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>Title</td>
+                        <td alignment="center"><input type="text" name="title" id="title" style="width: 200px" /></td>
+                    </tr>
+                    <tr>
+                        <td>Condition</td>
+                        <td alignment="center"><input type="text" name="condition" id="condition" style="width: 200px" /></td>
+                    </tr>
+                    <tr id="piece_count_row">
+                        <td>Piece Count</td>
+                        <td alignment="center"><input type="number" name="piece_count" id="piece_count" style="width: 200px" /></td>
+                    </tr>
+                    <tr id="platform_row">
+                        <td>Platform</td>
+                        <td><select id="platform" style="width: 150px; height:30px">
+                                <option value="Linux">Linux</option>
+                                <option value="macOS">macOS</option>
+                                <option value="Windows">Windows</option>
+                        </select></td>
+                    </tr>
+                    <tr id="vg_media_row">
+                        <td>Media</td>
+                        <td alignment="center"><input type="text" name="media" id="media" style="width: 200px" /></td>
+                    </tr>
+                    <tr id="vg_platform_row">
+                        <td>Video Game Platform</td>
+                        <td><select id="video_game_platform" style="width: 150px; height:30px">
+                                <option value="Nintendo">Nintendo</option>
+                                <option value="PlayStation">PlayStation</option>
+                                <option value="Xbox">Xbox</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td alignment="center"><input type="text" name="description" id="description" style="width: 200px" /></td>
+                    </tr>
+
+                    <tr>
+                        <td alignment="center"><input type="button" value="List item" class="register_btn" onclick="ListItem()" style="width: 200px" /></td>
+                    </tr>
+
+                </table>
+            </form>
+        }
+        else
+        {
+            <p>You can't list an item while you have more than 5 unaccepted swaps or 2 unrated swaps. Please respond and rate your swaps and come back!</p>
+        }
+    </div>
+
+    <script>
+        function hideAll() {
+            console.log("hiding");
+            $("#piece_count_row").hide();
+            $("#platform_row").hide();
+            $("#vg_media_row").hide();
+            $("#vg_platform_row").hide();
+        }
+
+       window.onload = function () {
+            hideAll();
+
+            $("#type").change(function () {
+                console.log("change");
+
+                hideAll();
+
+                switch ($("#type").val()) {
+                    case 'BoardGame':
+                    case 'CardGame':
+                        break;
+                    case 'JigsawPuzzle':
+                        $("#piece_count_row").show();
+                        break;
+                    case 'ComputerGame':
+                        $("#platform_row").show();
+                        break;
+                    case 'VideoGame':
+                        $("#vg_media_row").show();
+                        $("#vg_platform_row").show();
+                        break;
+                }
+            });
+        };
+
+        @* Runs the list item function *@
+        function ListItem() {
+            $.ajax({
+                type: "POST",
+                url: "/ListItem/ListItem",
+                async: true,
+                dataType: "json",
+                data: {
+                    type: $("#type").val(),
+                    nameTitle: $("#title").val(), 
+                    description: $("#description").val(), 
+                    itemCondition: $("#condition").val(), 
+                    pieceCount: $("#piece_count").val(), 
+                    platform: $("#platform").val(), 
+                    media: $("#media").val(), 
+                    videoGamePlatform: $("#video_game_platform").val()
+                },
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        alert("Your item has been listed! Item number is " + data.itemNumber);
+                        window.location.href = '/MainMenu/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+        }
+    </script>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>

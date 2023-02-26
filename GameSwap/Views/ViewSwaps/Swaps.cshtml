@@ -1,0 +1,65 @@
+﻿@using GameSwap.Models
+<style>
+    td {
+        border: 1px solid #f5b707;
+    }
+</style>
+<table class="table" style="border:1px solid #f5b707">
+    <tr style="border:1px solid #f5b707">
+        <td>Acceptance Date</td>
+        <td>My Role</td>
+        <td>Proposer Item</td>
+        <td>Desired Item</td>
+        <td>Nickname</td>
+        <td>Rating</td>
+    </tr>
+    @foreach (SwapInfo info in Model)
+    {
+        DateTime? ad = info.AcceptanceDate;
+        int? rating = info.Rating;
+        <tr style="border:1px solid #f5b707">
+            <td>@(ad == null ? "N/A" : ad.Value.ToString("yyyy-MM-dd HH:mm:ss"))</td>
+            <td>@info.Role</td>
+            <td>@info.ProposerItemName</td>
+            <td>@info.DesiredItemName</td>
+            <td>@info.Nickname</td>
+            <td id="rating">
+                @if (rating == null)
+                {
+                    <select id="rating" onchange=Rate(this)>
+                        <option value="0 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">0</option>
+                        <option value="1 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">1</option>
+                        <option value="2 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">2</option>
+                        <option value="3 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">3</option>
+                        <option value="4 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">4</option>
+                        <option value="5 @info.ProposerEmail @info.CounterpartyEmail @info.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">5</option>
+                    </select>
+                }
+                else
+                {
+                    @info.Rating
+                }
+            </td>
+        </tr>
+    }
+</table>
+<script>
+    function Rate(rating) {
+        val = rating.value
+        $.ajax({
+            type: "POST",
+            url: "/ViewSwaps/RateSwap",
+            async: true,
+            dataType: "json",
+            data: { value: val },
+            success: function (data) {
+                if (data.error != null) {
+                    alert("Couldn't rate swap " + data.error);
+                }
+                else {
+                    window.location.href = '/ViewSwaps/Index'
+                }
+            }
+        });
+    }
+</script>

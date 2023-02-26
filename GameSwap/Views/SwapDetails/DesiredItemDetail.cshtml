@@ -1,0 +1,20 @@
+﻿@model GameSwap.Models.Item
+<h2> Desired Item</h2>
+<table class="table" style="border:1px solid #f5b707">
+    <tr>
+        <td><b>Item #</b></td>
+        <td>@Model.ItemNumber</td>
+    </tr>
+    <tr>
+        <td><b>Name</b></td>
+        <td>@(String.IsNullOrEmpty(Model.NameTitle) ? "N/A" : Model.NameTitle)</td>
+    </tr>
+    <tr>
+        <td><b>Game Type</b></td>
+        <td> @Model.Type</td>
+    </tr>
+    <tr>
+        <td><b>Condition</b></td>
+        <td>@(String.IsNullOrEmpty(Model.ItemCondition) ? "N/A" : Model.ItemCondition)</td>
+    </tr>
+</table>

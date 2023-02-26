@@ -1,0 +1,7 @@
+﻿All SQL queries are included in the DAO folder.
+We have 5 files in DAO folder that include SQL queries:
+1. ItemDao.cs
+2. PhoneDao.cs
+3. PostalCodeDao.cs
+4. SwapDao.cs
+5. UserDao.cs

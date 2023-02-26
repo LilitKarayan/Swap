@@ -1,0 +1,83 @@
+﻿@using GameSwap.Models
+<style>
+    td {
+        border: 1px solid #f5b707;
+    }
+</style>
+<table style="border:1px solid #f5b707">
+    Swap History
+    <tr style="border:1px solid #f5b707">
+        <td>Proposal Date</td>
+        <td>Acceptance/Rejection Date</td>
+        <td>Status</td>
+        <td>Role</td>
+        <td>Proposer Item</td>
+        <td>Counterparty Item</td>
+        <td>Rating</td>
+        <td>Details</td>
+    </tr>
+    @foreach (SwapHistory sh in Model)
+    {
+        DateTime? ad = sh.AcceptanceDate;
+        int? rating = sh.Rating;
+        if (rating == null && (sh.Status.Equals("swapped") || sh.Status.Equals("Swapped")))
+        {
+            rating = -1;
+        }
+        string pEmail = sh.ProposerEmail;
+<tr style="border:1px solid #f5b707" class="table">
+    <td>@sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+    <td>@(ad == null ? "N/A" : ad.Value.ToString("yyyy-MM-dd HH:mm:ss"))
+    </td>
+    <td>@sh.Status</td>
+    <td>@sh.Role</td>
+    <td>@sh.ProposerItemName</td>
+    <td>@sh.CounterpartyItemName</td>
+    <td id="rating">
+        @if (rating == -1)
+        {
+        <select id="rating" onchange=Rate(this)>
+            <option value="0 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">0</option>
+            <option value="1 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">1</option>
+            <option value="2 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">2</option>
+            <option value="3 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">3</option>
+            <option value="4 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">4</option>
+            <option value="5 @sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">5</option>
+        </select>
+        }
+        else
+        {
+                    @sh.Rating
+        }
+    </td>
+    <td>
+        <a onmouseover="this.style.color='gold';" onmouseout="this.style.color='black';" onclick="ViewDetails('@sh.ProposerEmail @sh.CounterpartyEmail @sh.ProposalDateTime.ToString("yyyy-MM-dd HH:mm:ss")')"><u>Details</u></a>
+    </td>
+</tr>
+    }
+</table>
+<script>
+    function Rate(rating) {
+        val = rating.value
+        $.ajax({
+            type: "POST",
+            url: "/SwapHistory/RateSwap",
+            async: true,
+            dataType: "json",
+            data: { value: val },
+            success: function (data) {
+                if (data.error != null) {
+                    alert("Couldn't rate swap " + data.error);
+                }
+                else {
+                    window.location.href = '/SwapHistory/Index'
+                }
+            }
+        });
+    }
+</script>
+<script>
+    function ViewDetails(details) {
+        window.location.href = '/SwapDetails/Index?details=' + details;
+    }
+</script>

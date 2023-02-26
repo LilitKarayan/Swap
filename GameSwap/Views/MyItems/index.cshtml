@@ -1,0 +1,113 @@
+﻿@{
+	ViewData["Title"] = "MyItems";
+}
+@using GameSwap.Models
+
+<style>
+	#main {
+		border: 1px solid #f5b707;
+		width: 500px;
+		padding: 50px 50px;
+		margin: 0px 0px 0px 250px;
+		border-radius:25px;
+		color: black;
+	}
+	.register_btn {
+		font-size: 17px;
+		background-color: #f5b707;
+		color: #000;
+		padding: 13px 0px;
+		width: 100%;
+		max-width: 190px;
+		text-align: center;
+		display: inline-block;
+		transition: ease-in all 0.5s;
+		border: none;
+	}
+
+		.register_btn:hover {
+			background-color: #232323;
+			color: #fff;
+			transition: ease-in all 0.5s;
+			border-radius: 26px;
+		}
+
+</style>
+
+<body>
+    <h1>Item Counts</h1>
+    <table style="border:1px solid #f5b707">
+        
+        <tr style="border:1px solid #f5b707">
+            <td>Type</td>
+            <td>Count</td>
+        </tr>
+        @foreach ((string Type, int Count) itemCount in ViewBag.itemCounts)
+        {
+            <tr style="border:1px solid #f5b707">
+                <td>@itemCount.Type</td>
+                <td>@itemCount.Count</td>
+            </tr>
+        }
+    </table>
+    <h1>My Items</h1>
+    <table style="border:1px solid #f5b707">
+        
+        <tr style="border:1px solid #f5b707">
+            <td>Item Number</td>
+            <td>Game Type</td>
+            <td>Title</td>
+            <td>Condition</td>
+            <td>Description</td>
+            <td></td>
+        </tr>
+        @foreach (Item item in ViewBag.items)
+        {
+            <tr style="border:1px solid #f5b707">
+                <td>@item.ItemNumber</td>
+                <td>@item.Type</td>
+                <td>@item.NameTitle</td>
+                <td>@item.ItemCondition</td>
+                <td>
+                    @(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                </td>
+                <td><button class="btn btn-warning" type="button" onclick="GetItemDetails(@item.ItemNumber)">Item Details</button></td>
+            </tr>
+        }
+    </table>
+
+    <script>
+    
+    @* Runs the login function*@
+        function GetItemDetails(itemNumberInput) {
+            $.ajax({
+                type: "POST",
+                url: "/Item/GetItemDetails",
+                async: true,
+                dataType: "json",
+                data: { itemNumber: itemNumberInput },
+                success: function (data) {
+                    if (data.errMsg != "") {
+                        alert(String(data.errMsg));
+                    } else {
+                        window.location.href = '/Item/Index';
+                    }
+                },
+                error: function () {
+                    return "error";
+                }
+            });
+        }
+                    
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>

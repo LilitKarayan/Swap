@@ -1,0 +1,81 @@
+﻿@{ ViewData["Title"] = "Details"; }
+
+<style>
+    #main {
+        border: 1px solid #f5b707;
+        width: 500px;
+        padding: 50px 50px;
+        margin: 0px 0px 0px 250px;
+        border-radius: 25px;
+        color: black;
+    }
+
+    #FlexBox {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #FlexBox2 {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .back_btn {
+        font-size: 15px;
+        transition: ease-in all 0.5s;
+        background-color: #f5b707;
+        color: #fff;
+        right: 20px;
+        top: 10px;
+        padding: 6px 13px;
+    }
+
+    .back_btn:hover {
+        background-color: #232323;
+        color: #fff;
+        transition: ease-in all 0.5s;
+        border-radius: 26px;
+    }
+
+    .logo_text {
+        color: #f5b707;
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 5px
+    }
+</style>
+<div>
+    <button class="back_btn" type="button" onclick="GoBack()">Go Back to Swap History</button>
+    <hr>
+</div>
+<body>
+    <div>
+        <div id="swap_details"></div>
+        <div id="user_details"></div>
+        <div id="proposed_item_details"></div>
+        <div id="desired_item_details"></div>
+    </div>
+    <script>
+        window.onload = function () {
+            $("#swap_details").load('@Url.Action("Details", "SwapDetails")');
+            $("#user_details").load('@Url.Action("UserDetail", "SwapDetails")');
+            $("#proposed_item_details").load('@Url.Action("ProposedItemDetail", "SwapDetails")');
+            $("#desired_item_details").load('@Url.Action("DesiredItemDetail", "SwapDetails")');
+        }
+    </script>
+    <script>
+        function GoBack() {
+            window.location.href = '/SwapHistory/Index';
+        }
+    </script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/jquery-3.0.0.min.js"></script>
+    <script src="~/js/plugin.js"></script>
+    <!-- sidebar -->
+    <script src="~/js/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
+</body>
